@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+	<head>
+		<meta charset="UTF-8" />
+    	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+    	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    	<script src="https://cdn.socket.io/4.6.0/socket.io.min.js" integrity="sha384-c79GN5VsunZvi+Q/WObgk2in0CbZsHnjEqvFxC5DxHn9lTfNce2WW6h2pH6u/kF+" crossorigin="anonymous"></script>
+    	<meta http-equiv="x-ua-compatible" content="ie=edge" />
+    	<title>Websocket Up & Downloader</title>
+	</head>
+	<body>
+		 <div class="container py-5">
+		 	<div class="p-5 bg-light-subtle border border-2 rounded-3">
+		    	<div class="container py-5 text-center">
+		    		<div class="row">
+						<div class="col">
+		      				<h1 class="display-5 fw-bold">Websocket Up & Downloader</h1>
+		        			<p class="fs-4 py-2">This webapp is meant to test downloading and uploading files via websockets.</p>
+		        		</div>
+		      		</div>
+		      		<div class="row justify-content-center">
+		      				<div class="col-sm-2">
+			        			<button class="btn btn-secondary btn-lg" type="button" onclick="upload()">Upload&nbsp;&nbsp;<i class="bi bi-cloud-upload-fill"></i></button>
+			        		</div>
+			        		<div class="col-sm-2">
+			        			<button class="btn btn-secondary btn-lg" type="button" onclick="download()">Download&nbsp;&nbsp;<i class="bi bi-cloud-download-fill"></i></button>
+			        		</div>
+		        	</div>	
+		    	</div>
+  			</div>
+  		</div>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+		<script>
+			const socket = io("{{WS_CON}}", {
+				transports: ["websocket"]
+			});
+
+			socket.on("file sent", (data) => {
+	        	window.location.href = 'data:application/octet-stream;base64,' + data.file;
+	        });
+
+		    function download() {
+	        	socket.emit("download", "", (status) => {
+	        		if(status.message === "success") {
+	        			alert("Success!! The download starts immediately after clicking OK.");
+	        		} else {
+	        			alert("Failure!! An error occurred while downloading the file")
+	        		}
+	        	});
+		    }
+
+		    function upload() {
+		    	let input = document.createElement('input');
+				input.type = 'file';
+
+					input.onchange = e => { 
+
+					   let file = e.target.files[0]; 
+					   let reader = new FileReader();
+					   reader.readAsText(file,'UTF-8');
+
+					   reader.onload = readerEvent => {
+					   let content = readerEvent.target.result;
+					   
+					   socket.emit("upload", {name: file.name, content: btoa(content)}, (status) => {
+					   		if(status.message === "success") {
+	        					alert("Success!! The file was stored on the server.");
+	        				} else {
+	        					alert("Failure!! An error occurred when uploading the file.");
+	        				}
+					   });
+					}
+				}
+
+				input.click();
+		    }
+
+		</script>
+	</body>
+</html>
