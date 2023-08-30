@@ -7,7 +7,7 @@ const path = require("path")
 const fs = require('fs');
 
 const WEB_PORT = 3000;
-const DOMAIN = "localhost"
+const DOMAIN = process.env.RHOST || "localhost";
 
 const app = express();
 const server = http.createServer(app);
@@ -16,7 +16,7 @@ const io = new Server(server, {
 });
 
 io.on("connection", (socket) => {
-	
+
 	// upload file
 	socket.on("upload", (data, callback) => {
 	    // save the content to the disk
@@ -38,13 +38,13 @@ io.on("connection", (socket) => {
 
   			let buff = new Buffer.from(data);
   			let base64_data = buff.toString('base64');
-  			
+
   			io.emit("file sent", {
   				file: base64_data
 			});
 		});
 
-		
+
 	})
 });
 
