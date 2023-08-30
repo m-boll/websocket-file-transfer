@@ -32,4 +32,4 @@ $ docker build -t websocket-app .
 $ docker run -p 3000:3000 websocket-app
 ```
 
-By default, the websocket will be opened on `localhost`. If the socket should be accessible through a puilic domain you can use the environment variable `RHOST` to set the name. (e.g. `docker run -p 3000:3000 -e "RHOST=example.org" websocket-app`)
+By default, the websocket will be accessible on `localhost`. If the socket should be accessible through a public domain you can use the environment variable `RHOST` to set the name. (e.g. `docker run -p 3000:3000 -e "RHOST=example.org" websocket-app`)
