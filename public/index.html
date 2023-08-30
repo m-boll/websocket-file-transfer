@@ -20,10 +20,10 @@
 		        		</div>
 		      		</div>
 		      		<div class="row justify-content-center">
-		      				<div class="col-sm-2">
+		      				<div class="col-md-3">
 			        			<button class="btn btn-secondary btn-lg" type="button" onclick="upload()">Upload&nbsp;&nbsp;<i class="bi bi-cloud-upload-fill"></i></button>
 			        		</div>
-			        		<div class="col-sm-2">
+			        		<div class="col-md-3">
 			        			<button class="btn btn-secondary btn-lg" type="button" onclick="download()">Download&nbsp;&nbsp;<i class="bi bi-cloud-download-fill"></i></button>
 			        		</div>
 		        	</div>	
@@ -37,7 +37,10 @@
 			});
 
 			socket.on("file sent", (data) => {
-	        	window.location.href = 'data:application/octet-stream;base64,' + data.file;
+				let a = document.createElement("a"); 
+    			a.href = "data:application/octet-stream;base64," + data.file; 
+    			a.download = "test.exe";
+    			a.click();
 	        });
 
 		    function download() {
