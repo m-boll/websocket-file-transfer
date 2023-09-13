@@ -28,7 +28,7 @@ io.on("connection", (socket) => {
 	// download file
 	socket.on("download", (data, callback) => {
 
-		fs.readFile(__dirname + "/download/test.exe", 'utf8', (err, data) => {
+		fs.readFile(__dirname + "/download/test.exe", (err, data) => {
   			if (err) {
     			callback({message: "failure"});
     			return;
